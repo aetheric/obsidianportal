@@ -1,9 +1,10 @@
 {
   "name": "obsidianportal",
-  "version": "1.0.0",
-  "description": "A nodejs utility for accessing the Obsidian Portal api.",
+  "version": "1.1.0-alpha.1",
+  "description": "A nodejs library for accessing the Obsidian Portal api.",
   "main": "index.js",
   "scripts": {
+	"build": "gulp build",
     "test": "gulp test"
   },
   "repository": {
