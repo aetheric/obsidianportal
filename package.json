@@ -1,0 +1,26 @@
+{
+  "name": "obsidianportal",
+  "version": "1.0.0",
+  "description": "A nodejs utility for accessing the Obsidian Portal api.",
+  "main": "index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aetheric/obsidianportal.git"
+  },
+  "keywords": [
+    "api",
+    "obsidianportal"
+  ],
+  "author": "Peter Cummuskey <peterc@aetheric.co.nz>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/aetheric/obsidianportal/issues"
+  },
+  "homepage": "https://github.com/aetheric/obsidianportal#readme",
+  "devDependencies": {
+    "lazy-modules": "^1.0.0"
+  }
+}

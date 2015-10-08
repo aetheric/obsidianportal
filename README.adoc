@@ -1,0 +1,5 @@
+NodeJS Obsidian Portal API wrapper
+==================================
+
+An api wrapper for the Obsidian Portal API for NodeJS.
+
