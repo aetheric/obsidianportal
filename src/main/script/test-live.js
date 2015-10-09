@@ -1,10 +1,10 @@
-/* globals require */
+/* globals require, module */
 
 require('lazy-modules')([
 	'../../../node_modules/gulp*'
 ]);
 
-export default function() {
+module.exports = function() {
 	return gulp.src('../../test/live')
 		.pipe(gulp_mocha());
 }

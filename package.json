@@ -4,7 +4,7 @@
   "description": "A nodejs library for accessing the Obsidian Portal api.",
   "main": "index.js",
   "scripts": {
-	"build": "gulp build",
+    "build": "gulp build",
     "test": "gulp test"
   },
   "repository": {
@@ -22,6 +22,10 @@
   },
   "homepage": "https://github.com/aetheric/obsidianportal#readme",
   "devDependencies": {
+    "es6-module-loader": "^0.17.8",
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.1.3",
+    "gulp-util": "^3.0.6",
     "lazy-modules": "^1.0.0"
   }
 }
