@@ -1,8 +1,12 @@
-/* globals Array, Map */
+/* globals Array, Map, request_promise, appdir */
 
 import Portal from './Portal.es6';
 import User from './User.es6';
 import * as utils from './utils.es6';
+
+require('lazy-modules')([
+	appdir + '/node_modules/request-promise'
+]);
 
 let basicFields = [
 	'id',
@@ -97,7 +101,25 @@ export default class Campaign extends Map {
 	}
 
 	public function refresh() {
-		return this.$portal.campaignShow(this._id);
+		return show(this.$portal, id);
+	}
+
+	/**
+	 *
+	 * @param {String} campaignId
+	 * @param {Boolean} [useSlug]
+	 * @returns {Promise}
+	 */
+	public static function show(portal, campaignId, useSlug = false) {
+		let parsedUseSlug = useSlug ? 'true' : 'false';
+		return request_promise({
+			uri: `${portal.api_root}/campaigns/${campaignId}.json?use_slug=${parsedUseSlug}`,
+			method: 'GET'
+
+		}).then(function(response) {
+			return new Campaign(portal, response.data);
+
+		});
 	}
 
 }

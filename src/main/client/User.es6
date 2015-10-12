@@ -1,7 +1,11 @@
-/* globals Map, Array */
+/* globals Map, Array, appdir, request_promise */
 
 import Campaign from './Campaign.es6';
 import * as utils from './utils.es6';
+
+require('lazy-modules')([
+	appdir + '/node_modules/request-promise'
+]);
 
 let basicFields = [
 	'id',
@@ -51,6 +55,28 @@ export default class User extends Map {
 
 	public get avatar_image_url() {
 		return this._avatar_image_url;
+	}
+
+	public static function showMe(portal) {
+		return request_promise({
+			uri: `${portal.api_root}/users/me.json`,
+			method: 'GET'
+
+		}).then(function(response) {
+			return new User(portal, response.data);
+
+		});
+	}
+
+	public static function show(portal, userId) {
+		return request_promise({
+			uri: `${portal.api_root}/users/${userId}.json`,
+			method: 'GET'
+
+		}).then(function(response) {
+			return new User(portal, response.data);
+
+		});
 	}
 
 }
