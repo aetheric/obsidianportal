@@ -12,6 +12,26 @@ export default class Portal {
 
 	contructor(options) {
 		this.api_root = options.api_root || 'http://www.obsidianportal.com/v1';
+		this._User = User;
+		this._Campaign = Campaign;
+		this._Character = Character;
+		this._Page = Page;
+	}
+
+	public get User() {
+		return this._User;
+	}
+
+	public get Campaign() {
+		return this._Campaign;
+	}
+
+	public get Character() {
+		return this._Character;
+	}
+
+	public get Page() {
+		return this._Page;
 	}
 
 }
