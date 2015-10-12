@@ -10,12 +10,31 @@ require('lazy-modules')([
 
 export default class Portal {
 
+	/**
+	 *
+	 * @param {Object} options
+	 * @param {String} options.api_root
+	 */
 	contructor(options) {
-		this.api_root = options.api_root || 'http://www.obsidianportal.com/v1';
+		this._api_host = options.api_host || 'http://www.obsidianportal.com';
+		this._api_root = `${ options.api_root || api_host }/v1`;
+		this._api_auth = `${ options.api_auth || api_host }/oauth`;
 		this._User = User;
 		this._Campaign = Campaign;
 		this._Character = Character;
 		this._Page = Page;
+	}
+
+	public get api_host() {
+		return this._api_host;
+	}
+
+	public get api_root() {
+		return this._api_root;
+	}
+
+	public get api_auth() {
+		return this._api_auth;
 	}
 
 	public get User() {
