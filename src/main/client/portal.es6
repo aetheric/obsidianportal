@@ -1,4 +1,4 @@
-/* globals require, appdir, request_promise */
+/* globals require, appdir, request_promise, Promise */
 
 import User from './objects/User.es6';
 import MyUser from './objects/MyUser.es6';
@@ -10,8 +10,8 @@ require('lazy-modules')([
 
 export default class Portal {
 
-	contructor() {
-		this.api_root = 'http://www.obsidianportal.com/v1';
+	contructor(options) {
+		this.api_root = options.api_root || 'http://www.obsidianportal.com/v1';
 	}
 
 	function userShowMe() {
@@ -36,6 +36,12 @@ export default class Portal {
 		});
 	}
 
+	/**
+	 *
+	 * @param {String} campaignId
+	 * @param {Boolean} [useSlug]
+	 * @returns {Promise}
+	 */
 	function campaignShow(campaignId, useSlug = false) {
 		let parsedUseSlug = useSlug ? 'true' : 'false';
 		return request_promise({

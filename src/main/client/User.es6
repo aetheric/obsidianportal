@@ -1,22 +1,56 @@
 /* globals Map, Array */
 
-import CampaignBrief from './CampaignBrief.es6';
+import Campaign from './Campaign.es6';
+import * as utils from './utils.es6';
+
+let basicFields = [
+	'id',
+	'username',
+	'avatar_image_url',
+	'profile_url',
+	'created_at',
+	'is_ascendant',
+	'last_seen_at',
+	'utc_offset'
+];
 
 export default class User extends Map {
 
-	constructor(data) {
-		this.id = data.id;
-		this.username = data.username;
-		this.avatar_image_url = data.avatar_image_url;
-		this.profile_url = data.profile_url;
-		this.created_at = data.created_at;
-		this.is_ascendant = data.is_ascendant;
-		this.last_seen_at = data.last_seen_at;
-		this.utc_offset = data.utc_offset;
-		this.locale = data.locale;
-		this.campaigns = Array.map(data.campaigns, function(campaign) {
-			return new CampaignBrief(campaign);
-		});
+	/**
+	 *
+	 * @param {Portal} portal
+	 * @param {Object} data
+	 * @param {String} data.id
+	 * @param {String} data.username
+	 * @param {String} data.avatar_image_url
+	 */
+	constructor(portal, data) {
+		this.$portal = portal;
+		this.$active = [];
+
+		for (var field of basicFields) {
+			utils.copyField(field, data, this);
+		}
+
+		if (typeof(data.campaigns) !== 'undefined') {
+			this.$active.push('campaigns');
+			this._campaigns = Array.map(data.campaigns, function(campaign) {
+				return new Campaign(portal, campaign);
+			});
+		}
+
+	}
+
+	public get id() {
+		return this._id;
+	}
+
+	public get username() {
+		return this._username;
+	}
+
+	public get avatar_image_url() {
+		return this._avatar_image_url;
 	}
 
 }
