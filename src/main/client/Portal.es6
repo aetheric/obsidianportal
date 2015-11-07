@@ -3,6 +3,8 @@
 import User from './User.es6';
 import Campaign from './Campaign.es6';
 import Character from './Character.es6';
+import WikiPage from './WikiPage.es6';
+import SheetTemplate from './SheetTemplate.es6';
 
 let request = require('request-promise');
 
@@ -151,6 +153,158 @@ export default class Portal {
 		return request({
 			url: `${apiRoot}/campaigns/${campaignId}/characters/${characterId}.json`,
 			method: 'DELETE'
+
+		}).then((response) => {
+			return response.data;
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to retrieve a wiki page list from.
+	 * @returns {Promise<Array<WikiPage>>} A promise that resolves to a list of wiki pages.
+	 */
+	public function getWikiList(campaignId) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/wikis.json`,
+			method: 'GET'
+
+		}).then((response) => {
+			return Array.map(response.data, (wiki) => {
+				return new WikiPage(wiki);
+			});
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to retrieve a wiki page list from.
+	 * @param {String} wikiPageId The ID of the wiki page to retrieve. You can also use the wiki page slug.
+	 * @param {Boolean} [useSlug] When set to 'true', or '1', the wiki page will be looked up by slug instead of id.
+	 *                              Note: The campaign_id must be an identifier, not a slug.
+	 * @returns {Promise<WikiPage>} A promise that resolves to a wiki page.
+	 */
+	public function getWikiPage(campaignId, wikiPageId, useSlug = false) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/wikis/${wikiPageId}.json`,
+			method: 'GET',
+			params: {
+				use_slug: useSlug
+			}
+
+		}).then((response) => {
+			return new WikiPage(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to create a wiki page in.
+	 * @param {WikiPage} wikiPage The wiki page to created.
+	 * @returns {Promise<WikiPage>} A promise that resolves to the newly created wiki page.
+	 */
+	public function createWikiPage(campaignId, wikiPage) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/wikis.json`,
+			method: 'POST',
+			body: {
+				wiki_page: wikiPage
+			}
+
+		}).then((response) => {
+			return new WikiPage(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to retrieve a wiki page from.
+	 * @param {WikiPage} wikiPage The wiki page content to update.
+	 * @returns {Promise<WikiPage} A promise that resolves to the newly updated wiki page.
+	 */
+	public function updateWikiPage(campaignId, wikiPage) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/wikis/${wikiPage.id}.json`,
+			method: 'PUT',
+			body: {
+				wiki_page: wikiPage
+			}
+
+		}).then((response) => {
+			return new WikiPage(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to retrieve a wiki page from.
+	 * @param {String} wikiPageId The ID of the wiki page to delete.
+	 * @returns {Promise} A promise that resolves to nothing in particular.s
+	 */
+	public function deleteWikiPage(campaignId, wikiPageId) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/wikis/${wikiPageId}.json`,
+			method: 'DELETE'
+
+		}).then((response) => {
+			return response.data;
+		});
+	}
+
+	/**
+	 * @returns {Promise<Array<SheetTemplate>>} A promise resolving to a list of sheet templates.
+	 */
+	public function getSheetTemplateList() {
+		return request({
+			url: `${apiRoot}/dynamic_sheet_templates.json`,
+			method: 'GET'
+
+		}).then((response) => {
+			return Array.map(response.data, (sheetTemplate) => {
+				return new SheetTemplate(sheetTemplate);
+			});
+		});
+	}
+
+	/**
+	 * @param {String} sheetTemplateId The ID of the DST to retrieve. You can also use the DST slug.
+	 * @param {Boolean} useSlug When set to 'true', or '1', the DST will be looked up by slug instead of id.
+	 * @returns {Promise<SheetTemplate>} A promise resolving to a single sheet template.
+	 */
+	public function getSheetTemplate(sheetTemplateId, useSlug = false) {
+		return request({
+			url: `${apiRoot}/dynamic_sheet_templates/${sheetTemplateId}.json`,
+			method: 'GET',
+			params: {
+				use_slug: useSlug
+			}
+
+		}).then((response) => {
+			return new SheetTemplate(response.data);
+		});
+	}
+
+	/**
+	 * @param {SheetTemplate} sheetTemplate The sheet template to update.
+	 * @param {String} sheetTemplate.id The ID of the DST to update.
+	 * @returns {Promise<SheetTemplate>} A promise resolving to the freshly updated template.
+	 */
+	public function updateSheetTemplate(sheetTemplate) {
+		return request({
+			url: `${apiRoot}/dynamic_sheet_templates/${sheetTemplate.id}.json`,
+			method: 'PUT',
+			body: {
+				dynamic_sheet_template: sheetTemplate
+			}
+
+		}).then((response) => {
+			return new SheetTemplate(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} sheetTemplateId The ID of the DST to submit.
+	 * @returns {Promise} A promise resolving to nothing in particular.
+	 */
+	public function submitSheetTemplate(sheetTemplateId) {
+		return request({
+			url: `${apiRoot}/dynamic_sheet_templates/${sheetTemplateId}/submit.json`,
+			method: 'PUT'
 
 		}).then((response) => {
 			return response.data;
