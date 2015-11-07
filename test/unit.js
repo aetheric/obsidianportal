@@ -1,22 +1,22 @@
 /* global require, describe, it */
 'use strict';
 
-var chai = require('chai');
+import Campaign from '../client/Character.js';
 
-var Campaign = require('../main/client/Character.es6');
+let chai = require('chai');
 
-var expect = chai.expect;
+let expect = chai.expect;
 
-describe('When the Campaign class', function() {
+describe('When the Campaign class', () => {
 
-	describe('is empty', function() {
-		var campaign = new Campaign({});
+	describe('is empty', () => {
+		let campaign = new Campaign({});
 
-		it('does not throw an error when accessing players', function() {
+		it('does not throw an error when accessing players', () => {
 			expect(campaign.players).to.be.empty();
 		});
 
-		it('does not throw an error when accessing fans', function() {
+		it('does not throw an error when accessing fans', () => {
 			expect(campaign.fans).to.be.empty();
 		});
 
@@ -24,12 +24,12 @@ describe('When the Campaign class', function() {
 
 });
 
-describe('When the User class', function() {
+describe('When the User class', () => {
 
-	describe('is empty', function() {
-		var user = new User({});
+	describe('is empty', () => {
+		let user = new User({});
 
-		it('does not throw an error when accessing campaigns', function() {
+		it('does not throw an error when accessing campaigns', () => {
 			expect(user.campaigns).to.be.empty();
 		});
 

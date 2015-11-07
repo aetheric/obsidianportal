@@ -1,26 +1,26 @@
 /* global require, describe, it */
 'use strict';
 
-var chai = require('chai');
+import Portal from '../client/portal.js';
 
-var Portal = require('../main/client/Portal.es6');
+let chai = require('chai');
 
-var expect = chai.expect;
+let expect = chai.expect;
 
-describe('When the portal', function() {
-	var portal = new Portal();
+describe('When the portal', () => {
+	let portal = new Portal();
 
-	it('must be able to authorise itself', function() {
+	it('must be able to authorise itself', () => {
 
-		var oauth_token = '';
-		var oauth_secret = '';
-		var oauth_verification = '';
+		let oauth_token = '';
+		let oauth_secret = '';
+		let oauth_verification = '';
 
-		return portal.authenticate(oauth_token, oauth_secret).then(function(result) {
+		return portal.authenticate(oauth_token, oauth_secret).then((result) => {
 
 			return result.callback(oauth_verification);
 
-		}).then(function(response) {
+		}).then((response) => {
 
 			expect(response.data.consumer_token).to.equal(oauth_token);
 			expect(response.data.consumer_token_secret).to.equal(oauth_secret);
