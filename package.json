@@ -22,9 +22,12 @@
   },
   "homepage": "https://github.com/aetheric/obsidianportal#readme",
   "devDependencies": {
+    "chai": "^3.4.1",
     "es6-module-loader": "^0.17.8",
     "gulp": "^3.9.0",
+    "gulp-istanbul": "^0.10.2",
     "gulp-mocha": "^2.1.3",
+    "gulp-traceur": "^0.17.1",
     "gulp-util": "^3.0.6",
     "lazy-modules": "^1.0.0"
   }

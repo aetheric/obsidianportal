@@ -44,7 +44,7 @@ export default class User {
 	 * {@link GetUserResponse.id}
 	 * @returns {String}
 	 */
-	public get id() {
+	get id() {
 		return this.$data.id;
 	}
 
@@ -52,7 +52,7 @@ export default class User {
 	 * {@link GetUserResponse.username}
 	 * @returns {String}
 	 */
-	public get username() {
+	get username() {
 		return this.$data.username;
 	}
 
@@ -60,7 +60,7 @@ export default class User {
 	 * {@link GetUserResponse.avatar_image_url}
 	 * @returns {String}
 	 */
-	public get avatarImageUrl() {
+	get avatarImageUrl() {
 		return this.$data.avatar_image_url;
 	}
 
@@ -68,7 +68,7 @@ export default class User {
 	 * {@link GetUserResponse.profile_url}
 	 * @returns {String}
 	 */
-	public get profileUrl() {
+	get profileUrl() {
 		return this.$data.profile_url;
 	}
 
@@ -76,7 +76,7 @@ export default class User {
 	 * {@link GetUserResponse.campaigns}
 	 * @returns {Map<Campaign,String>}
 	 */
-	public get campaigns() {
+	get campaigns() {
 		return Array.reduce(this.$data.campaigns, (map, campaign) => {
 			map.set(new Campaign(campaign), campaign.role);
 			return map;
@@ -88,7 +88,7 @@ export default class User {
 	 * {@link GetUserResponse.is_ascendant}
 	 * @returns {Boolean}
 	 */
-	public get isAscendant() {
+	get isAscendant() {
 		return this.$data.is_ascendant;
 	}
 
@@ -96,7 +96,7 @@ export default class User {
 	 * {@link GetUserResponse.last_seen_at}
 	 * @returns {Date}
 	 */
-	public get lastSeenAt() {
+	get lastSeenAt() {
 		return this.$data.last_seen_at;
 	}
 
@@ -104,7 +104,7 @@ export default class User {
 	 * {@link GetUserResponse.utc_offset}
 	 * @returns {String}
 	 */
-	public get utcOffset() {
+	get utcOffset() {
 		return this.$data.utc_offset;
 	}
 
@@ -112,7 +112,7 @@ export default class User {
 	 * {@link GetUserResponse.locale}
 	 * @returns {String}
 	 */
-	public get locale() {
+	get locale() {
 		return this.$data.locale;
 	}
 
@@ -120,7 +120,7 @@ export default class User {
 	 * {@link GetUserResponse.created_at}
 	 * @returns {Date}
 	 */
-	public get createdAt() {
+	get createdAt() {
 		return this.$data.created_at;
 	}
 
@@ -128,7 +128,7 @@ export default class User {
 	 * {@link GetUserResponse.updated_at}
 	 * @returns {Date}
 	 */
-	public get updatedAt() {
+	get updatedAt() {
 		return this.$data.updated_at;
 	}
 

@@ -1,38 +1,26 @@
-/* globals Map */
+/* globals */
+'use strict';
 
-import * as utils from './utils.es6';
-
-let basicFields = [
-	'message',
-	'code'
-];
-
-export default class ErrorMessage extends Map {
+export default class ErrorMessage {
 
 	/**
-	 *
 	 * @param {Object} data
 	 * @param {String} data.message
 	 * @param {Number} data.code
 	 */
 	constructor(data) {
-		this.$active = [];
-
-		for (var field of data) {
-			utils.copyField(field, data, this);
-		}
-
+		this.$data = data;
 	}
 
-	public get message() {
-		return this._message;
+	get message() {
+		return this.$data.message;
 	}
 
-	public get code() {
-		return this._code;
+	get code() {
+		return this.$data.code;
 	}
 
-	public static get codes() {
+	static get codes() {
 		return {
 			4010: 'INVALID_PARAMETER_VALUE: The passed parameter has an invalid value, such as an ill-formed e-mail ' +
 			'address. Inspect the error message for more detail.',

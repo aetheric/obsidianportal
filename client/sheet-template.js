@@ -62,7 +62,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.id}
 	 * @returns {String}
 	 */
-	public get id() {
+	get id() {
 		return this.$data.id;
 	}
 
@@ -70,7 +70,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.slug}
 	 * @returns {String}
 	 */
-	public get slug() {
+	get slug() {
 		return this.$data.slug;
 	}
 
@@ -78,7 +78,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.name}
 	 * @returns {String}
 	 */
-	public get name() {
+	get name() {
 		return this.$data.name;
 	}
 
@@ -86,7 +86,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.user}
 	 * @returns {GetSheetTemplateResponse~User}
 	 */
-	public get user() {
+	get user() {
 		return this.$data.user;
 	}
 
@@ -94,7 +94,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.game_system}
 	 * @returns {GetSheetTemplateResponse~GameSystem}
 	 */
-	public get gameSystem() {
+	get gameSystem() {
 		return this.$data.game_system;
 	}
 
@@ -102,7 +102,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.html_template}
 	 * @returns {String}
 	 */
-	public get htmlTemplate() {
+	get htmlTemplate() {
 		return this.$data.html_template;
 	}
 
@@ -110,7 +110,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.css}
 	 * @returns {String}
 	 */
-	public get css() {
+	get css() {
 		return this.$data.css;
 	}
 
@@ -118,7 +118,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.javascript}
 	 * @returns {String}
 	 */
-	public get javascript() {
+	get javascript() {
 		return this.$data.javascript;
 	}
 
@@ -126,7 +126,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.state}
 	 * @returns {String}
 	 */
-	public get state() {
+	get state() {
 		return this.$data.state;
 	}
 
@@ -134,7 +134,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.created_at}
 	 * @returns {Date}
 	 */
-	public get createdAt() {
+	get createdAt() {
 		return this.$data.created_at;
 	}
 
@@ -142,7 +142,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.updated_at}
 	 * @returns {Date}
 	 */
-	public get updatedAt() {
+	get updatedAt() {
 		return this.$data.updated_at;
 	}
 
@@ -150,7 +150,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.html_template_submitted}
 	 * @returns {String}
 	 */
-	public get htmlTemplateSubmitted() {
+	get htmlTemplateSubmitted() {
 		return this.$data.html_template_submitted;
 	}
 
@@ -158,7 +158,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.css_submitted}
 	 * @returns {String}
 	 */
-	public get cssSubmitted() {
+	get cssSubmitted() {
 		return this.$data.css_submitted;
 	}
 
@@ -166,7 +166,7 @@ export default class SheetTemplate {
 	 * {@link GetSheetTemplateResponse.javascript_submitted}
 	 * @returns {String}
 	 */
-	public get javascriptSubmitted() {
+	get javascriptSubmitted() {
 		return this.$data.javascript_submitted;
 	}
 

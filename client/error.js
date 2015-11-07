@@ -1,12 +1,11 @@
-/* globals Map */
+/* globals */
+'use strict';
 
-import ErrorMessage from './ErrorMessage.es6';
-import * as utils from './utils.es6';
+import ErrorMessage from './error-message.es6';
 
-export default class Error extends Map {
+export default class Error {
 
 	/**
-	 *
 	 * @param {Object} data
 	 * @param {Number} data.http_status
 	 * @param {Object[]} data.errors
@@ -14,28 +13,20 @@ export default class Error extends Map {
 	 * @param {Number} [data.errors[].code]
 	 */
 	constructor(data) {
-		this.$active = [];
-
-		utils.copyField('http_status', data, this);
-
-		if (typeof(data.errors) !== 'undefined') {
-			this.$active.push('errors');
-			this._errors = data.errors.map(function(error) {
-				return new ErrorMessage(error);
-			});
-		}
-
+		this.$data = data;
 	}
 
-	public get http_status() {
-		return this._http_status;
+	get http_status() {
+		return this.$data.http_status;
 	}
 
-	public get errors() {
-		return this._errors;
+	get errors() {
+		return Array.map(this.$data.errors, (error) => {
+			return new ErrorMessage(error);
+		});
 	}
 
-	public static get codes() {
+	static get codes() {
 		return {
 			200: 'Success. This is the most common response when everything works normally.',
 			201: 'Created. This is returned when something is created, like a new wiki page.',

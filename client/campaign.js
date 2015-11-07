@@ -55,7 +55,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.id}
 	 * @returns {String}
 	 */
-	public get id() {
+	get id() {
 		return this.$data.id;
 	}
 
@@ -63,7 +63,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.slug}
 	 * @returns {String}
 	 */
-	public get slug() {
+	get slug() {
 		return this.$data.slug;
 	}
 
@@ -71,7 +71,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.campaign_url}
 	 * @returns {String}
 	 */
-	public get campaignUrl() {
+	get campaignUrl() {
 		return this.$data.campaign_url;
 	}
 
@@ -79,7 +79,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.visibility}
 	 * @returns {String}
 	 */
-	public get visibility() {
+	get visibility() {
 		return this.$data.visibility;
 	}
 
@@ -87,7 +87,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.game_master}
 	 * @returns {User}
 	 */
-	public get gameMaster() {
+	get gameMaster() {
 		return new User(this.$data.game_master);
 	}
 
@@ -95,7 +95,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.created_at}
 	 * @returns {Date}
 	 */
-	public get createdAt() {
+	get createdAt() {
 		return this.$data.created_at;
 	}
 
@@ -103,7 +103,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.updated_at}
 	 * @returns {Date}
 	 */
-	public get updatedAt() {
+	get updatedAt() {
 		return this.$data.updated_at;
 	}
 
@@ -111,7 +111,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.banner_image_url}
 	 * @returns {String}
 	 */
-	public get bannerImageUrl() {
+	get bannerImageUrl() {
 		return this.$data.banner_image_url;
 	}
 
@@ -119,7 +119,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.play_status}
 	 * @returns {String}
 	 */
-	public get playStatus() {
+	get playStatus() {
 		return this.$data.play_status;
 	}
 
@@ -127,7 +127,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.players}
 	 * @returns {Array<User>}
 	 */
-	public get players() {
+	get players() {
 		return Array.map(this.$data.players, (player) => {
 			return new User(player);
 		});
@@ -137,7 +137,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.fans}
 	 * @returns {Array<User>}
 	 */
-	public get fans() {
+	get fans() {
 		return Array.map(this.$data.fans, (player) => {
 			return new User(player);
 		});
@@ -147,7 +147,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.looking_for_players}
 	 * @returns {Boolean}
 	 */
-	public get lookingForPlayers() {
+	get lookingForPlayers() {
 		return this.$data.looking_for_players;
 	}
 
@@ -155,7 +155,7 @@ export default class Campaign {
 	 * {@link GetCampaignResponse.location}
 	 * @returns {{ lat: Number, lng: Number }}
 	 */
-	public get location() {
+	get location() {
 		return this.$data.location;
 	}
 

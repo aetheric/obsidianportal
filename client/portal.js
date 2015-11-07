@@ -18,28 +18,7 @@ export default class Portal {
 	contructor(options = {}) {
 		this._apiRoot = options.apiRoot || 'http://api.obsidianportal.com/v1';
 		this._apiAuth = options.apiAuth || 'https://www.obsidianportal.com/oauth';
-		this._oauth = {}
-	}
-
-	/**
-	 * @returns {String}
-	 */
-	private get apiRoot() {
-		return this._apiRoot;
-	}
-
-	/**
-	 * @returns {String}
-	 */
-	private get apiAuth() {
-		return this._apiAuth;
-	}
-
-	/**
-	 * @returns {Object}
-	 */
-	private get oauth() {
-		return this._oauth;
+		this._oauth = {};
 	}
 
 	/**
@@ -58,35 +37,37 @@ export default class Portal {
 	 * @returns {Promise<authenticate~result>} A promise resolving to an object that contains the url that the user
 	 *      needs to be sent to, and a callback to invoke with the verification token once that is complete.
 	 */
-	public function authenticate(consumerKey, consumerSecret, callbackUrl) {
+	authenticate(consumerKey, consumerSecret, callbackUrl) {
 
 		function createCallback(authToken, authTokenSecret) {
-			return (verificationToken) => request({
-				url: `${apiAuth}/access_token`,
-				method: 'POST',
-				oauth: {
-					consumer_key: consumerKey,
-					consumer_secret: consumerSecret,
-					token: authToken,
-					token_secret: authTokenSecret,
-					verifier: verificationToken
-				}
+			return (verificationToken) => {
+				return request({
+					url: `${this._apiAuth}/access_token`,
+					method: 'POST',
+					oauth: {
+						consumer_key: consumerKey,
+						consumer_secret: consumerSecret,
+						token: authToken,
+						token_secret: authTokenSecret,
+						verifier: verificationToken
+					}
 
-			}).then((response) => {
-				let data = response.data;
-				this._oauth = {
-					consumer_key: consumerKey,
-					consumer_secret: consumerSecret,
-					token: data.oauth_token,
-					token_secret: data.oauth_token_secret,
-					signature_method: 'HMCA-SHA1'
-				};
+				}).then((response) => {
+					let data = response.data;
+					this._oauth = {
+						consumer_key: consumerKey,
+						consumer_secret: consumerSecret,
+						token: data.oauth_token,
+						token_secret: data.oauth_token_secret,
+						signature_method: 'HMCA-SHA1'
+					};
 
-			});
+				});
+			}
 		}
 
 		return request({
-			url: `${apiAuth}/request_token`,
+			url: `${this._apiAuth}/request_token`,
 			method: 'POST',
 			oauth: {
 				callback: callbackUrl,
@@ -97,7 +78,7 @@ export default class Portal {
 		}).then((response) => {
 			let data = response.data;
 			return {
-				auth_url: `${apiAuth}/authorize?oauth_token=${data.oauth_token}`,
+				auth_url: `${this._apiAuth}/authorize?oauth_token=${data.oauth_token}`,
 				callback: createCallback(data.oauth_token, data.oauth_token_secret)
 			};
 
@@ -110,9 +91,9 @@ export default class Portal {
 	 * @param [useUsername] Whether the userId provided is an identifier, or username.
 	 * @returns {Promise<User>} A promise resolving to the user object.
 	 */
-	public function getUser(userId, useUsername = false) {
+	getUser(userId, useUsername = false) {
 		return request({
-			uri: `${apiRoot}/users/${ userId || 'me' }.json`,
+			uri: `${this._apiRoot}/users/${ userId || 'me' }.json`,
 			method: 'GET',
 			params: {
 				use_username: useUsername
@@ -128,9 +109,9 @@ export default class Portal {
 	 * @param {Boolean} [useSlug] Whether the campaignId is a slug or not.
 	 * @returns {Promise<Campaign>} A promise resolving to a Campaign object.
 	 */
-	public function getCampaign(campaignId, useSlug = false) {
+	getCampaign(campaignId, useSlug = false) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}.json`,
 			method: 'GET',
 			params: {
 				use_slug: useSlug
@@ -145,9 +126,9 @@ export default class Portal {
 	 * @param {String} campaignId The campaign identifier.
 	 * @returns {Promise<Array<Character>>} A promise resolving to a list of Characters.
 	 */
-	public function getCharacterList(campaignId) {
+	getCharacterList(campaignId) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/characters.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/characters.json`,
 			method: 'GET'
 
 		}).then((response) => {
@@ -164,9 +145,9 @@ export default class Portal {
 	 *                      Note: The campaign_id must be an identifier, not a slug.
 	 * @returns {Promise<Character>} A promise containing a single character for a campaign.
 	 */
-	public function getCharacter(campaignId, characterId, useSlug = false) {
+	getCharacter(campaignId, characterId, useSlug = false) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/characters/${characterId}.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/characters/${characterId}.json`,
 			method: 'GET',
 			params: {
 				use_slug: useSlug
@@ -182,9 +163,9 @@ export default class Portal {
 	 * @param {Character} character The character to create for the campaign.
 	 * @returns {Promise<Character>} A promise that resolves to the newly created character.
 	 */
-	public function createCharacter(campaignId, character) {
+	createCharacter(campaignId, character) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/characters.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/characters.json`,
 			method: 'POST',
 			body: {
 				character: character
@@ -201,9 +182,9 @@ export default class Portal {
 	 * @param {String} character.id  The ID of the character to update.
 	 * @returns {Promise<Character>} A promise that resolves to the newly updated character.
 	 */
-	public function updateCharacter(campaignId, character) {
+	updateCharacter(campaignId, character) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/characters/${character.id}.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/characters/${character.id}.json`,
 			method: 'PUT'
 
 		}).then((response) => {
@@ -216,9 +197,9 @@ export default class Portal {
 	 * @param {String} characterId The ID of the character to delete.
 	 * @returns {Promise} A promise that resolves to nothing in particular.
 	 */
-	public function deleteCharacter(campaignId, characterId) {
+	deleteCharacter(campaignId, characterId) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/characters/${characterId}.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/characters/${characterId}.json`,
 			method: 'DELETE'
 
 		}).then((response) => {
@@ -230,9 +211,9 @@ export default class Portal {
 	 * @param {String} campaignId The ID of the campaign to retrieve a wiki page list from.
 	 * @returns {Promise<Array<WikiPage>>} A promise that resolves to a list of wiki pages.
 	 */
-	public function getWikiList(campaignId) {
+	getWikiList(campaignId) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/wikis.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/wikis.json`,
 			method: 'GET'
 
 		}).then((response) => {
@@ -249,9 +230,9 @@ export default class Portal {
 	 *                              Note: The campaign_id must be an identifier, not a slug.
 	 * @returns {Promise<WikiPage>} A promise that resolves to a wiki page.
 	 */
-	public function getWikiPage(campaignId, wikiPageId, useSlug = false) {
+	getWikiPage(campaignId, wikiPageId, useSlug = false) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/wikis/${wikiPageId}.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/wikis/${wikiPageId}.json`,
 			method: 'GET',
 			params: {
 				use_slug: useSlug
@@ -267,9 +248,9 @@ export default class Portal {
 	 * @param {WikiPage} wikiPage The wiki page to created.
 	 * @returns {Promise<WikiPage>} A promise that resolves to the newly created wiki page.
 	 */
-	public function createWikiPage(campaignId, wikiPage) {
+	createWikiPage(campaignId, wikiPage) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/wikis.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/wikis.json`,
 			method: 'POST',
 			body: {
 				wiki_page: wikiPage
@@ -285,9 +266,9 @@ export default class Portal {
 	 * @param {WikiPage} wikiPage The wiki page content to update.
 	 * @returns {Promise<WikiPage} A promise that resolves to the newly updated wiki page.
 	 */
-	public function updateWikiPage(campaignId, wikiPage) {
+	updateWikiPage(campaignId, wikiPage) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/wikis/${wikiPage.id}.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/wikis/${wikiPage.id}.json`,
 			method: 'PUT',
 			body: {
 				wiki_page: wikiPage
@@ -303,9 +284,9 @@ export default class Portal {
 	 * @param {String} wikiPageId The ID of the wiki page to delete.
 	 * @returns {Promise} A promise that resolves to nothing in particular.s
 	 */
-	public function deleteWikiPage(campaignId, wikiPageId) {
+	deleteWikiPage(campaignId, wikiPageId) {
 		return request({
-			url: `${apiRoot}/campaigns/${campaignId}/wikis/${wikiPageId}.json`,
+			url: `${this._apiRoot}/campaigns/${campaignId}/wikis/${wikiPageId}.json`,
 			method: 'DELETE'
 
 		}).then((response) => {
@@ -316,9 +297,9 @@ export default class Portal {
 	/**
 	 * @returns {Promise<Array<SheetTemplate>>} A promise resolving to a list of sheet templates.
 	 */
-	public function getSheetTemplateList() {
+	getSheetTemplateList() {
 		return request({
-			url: `${apiRoot}/dynamic_sheet_templates.json`,
+			url: `${this._apiRoot}/dynamic_sheet_templates.json`,
 			method: 'GET'
 
 		}).then((response) => {
@@ -333,9 +314,9 @@ export default class Portal {
 	 * @param {Boolean} useSlug When set to 'true', or '1', the DST will be looked up by slug instead of id.
 	 * @returns {Promise<SheetTemplate>} A promise resolving to a single sheet template.
 	 */
-	public function getSheetTemplate(sheetTemplateId, useSlug = false) {
+	getSheetTemplate(sheetTemplateId, useSlug = false) {
 		return request({
-			url: `${apiRoot}/dynamic_sheet_templates/${sheetTemplateId}.json`,
+			url: `${this._apiRoot}/dynamic_sheet_templates/${sheetTemplateId}.json`,
 			method: 'GET',
 			params: {
 				use_slug: useSlug
@@ -351,9 +332,9 @@ export default class Portal {
 	 * @param {String} sheetTemplate.id The ID of the DST to update.
 	 * @returns {Promise<SheetTemplate>} A promise resolving to the freshly updated template.
 	 */
-	public function updateSheetTemplate(sheetTemplate) {
+	updateSheetTemplate(sheetTemplate) {
 		return request({
-			url: `${apiRoot}/dynamic_sheet_templates/${sheetTemplate.id}.json`,
+			url: `${this._apiRoot}/dynamic_sheet_templates/${sheetTemplate.id}.json`,
 			method: 'PUT',
 			body: {
 				dynamic_sheet_template: sheetTemplate
@@ -368,9 +349,9 @@ export default class Portal {
 	 * @param {String} sheetTemplateId The ID of the DST to submit.
 	 * @returns {Promise} A promise resolving to nothing in particular.
 	 */
-	public function submitSheetTemplate(sheetTemplateId) {
+	submitSheetTemplate(sheetTemplateId) {
 		return request({
-			url: `${apiRoot}/dynamic_sheet_templates/${sheetTemplateId}/submit.json`,
+			url: `${this._apiRoot}/dynamic_sheet_templates/${sheetTemplateId}/submit.json`,
 			method: 'PUT'
 
 		}).then((response) => {
