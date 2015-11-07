@@ -1,13 +1,10 @@
 /* globals require */
 
-require('lazy-modules')([
-	'./node_modules/gulp*',
-	'./src/main/script/**'
-]);
+var gulp = require('gulp');
 
-gulp.task('build', build);
-gulp.task('test-unit', test_unit);
-gulp.task('test-live', test_live);
+gulp.task('build', require('./scripts/build.js'));
+gulp.task('test-unit', require('./scripts/test-unit.js'));
+gulp.task('test-live', require('./scripts/test-live.js'));
 gulp.task('test', [ 'test-unit', 'test-live' ]);
 gulp.task('default', [ 'build', 'test' ]);
 

@@ -11,31 +11,98 @@ let request = require('request-promise');
 export default class Portal {
 
 	/**
-	 * @param {String} [api_host]
+	 * @param {Object} [options] Options for configuring the client.
+	 * @param {String} [options.apiRoot] Where api requests are targeted at.
+	 * @param {String} [options.apiAuth] Where the OAuth api endpoints reside.
 	 */
-	contructor(api_host = 'http://www.obsidianportal.com') {
-		this._api_host = api_host;
+	contructor(options = {}) {
+		this._apiRoot = options.apiRoot || 'http://api.obsidianportal.com/v1';
+		this._apiAuth = options.apiAuth || 'https://www.obsidianportal.com/oauth';
+		this._oauth = {}
 	}
 
 	/**
-	 * @returns {string}
-	 */
-	private get apiHost() {
-		return this._api_host;
-	}
-
-	/**
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	private get apiRoot() {
-		return `${apiHost}/v1`;
+		return this._apiRoot;
 	}
 
 	/**
-	 * @returns {string}
+	 * @returns {String}
 	 */
 	private get apiAuth() {
-		return `${apiHost}/oauth`;
+		return this._apiAuth;
+	}
+
+	/**
+	 * @returns {Object}
+	 */
+	private get oauth() {
+		return this._oauth;
+	}
+
+	/**
+	 * @callback authenticate~complete
+	 * @param {String} verificationToken The token displayed after authorising.
+	 */
+	/**
+	 * @typedef {Object} authenticate~result
+	 * @property {String} auth_url The url where the verification token can be retrieved.
+	 * @property {authenticate~complete} A callback that will finish the authentication.
+	 */
+	/**
+	 * @param {String} consumerKey The consumer key as per the oauth spec.
+	 * @param {String} consumerSecret The consumer secret as per the oauth spec.
+	 * @param {String} [callbackUrl] The callback url for the oauth authorisation.
+	 * @returns {Promise<authenticate~result>} A promise resolving to an object that contains the url that the user
+	 *      needs to be sent to, and a callback to invoke with the verification token once that is complete.
+	 */
+	public function authenticate(consumerKey, consumerSecret, callbackUrl) {
+
+		function createCallback(authToken, authTokenSecret) {
+			return (verificationToken) => request({
+				url: `${apiAuth}/access_token`,
+				method: 'POST',
+				oauth: {
+					consumer_key: consumerKey,
+					consumer_secret: consumerSecret,
+					token: authToken,
+					token_secret: authTokenSecret,
+					verifier: verificationToken
+				}
+
+			}).then((response) => {
+				let data = response.data;
+				this._oauth = {
+					consumer_key: consumerKey,
+					consumer_secret: consumerSecret,
+					token: data.oauth_token,
+					token_secret: data.oauth_token_secret,
+					signature_method: 'HMCA-SHA1'
+				};
+
+			});
+		}
+
+		return request({
+			url: `${apiAuth}/request_token`,
+			method: 'POST',
+			oauth: {
+				callback: callbackUrl,
+				consumer_key: consumerKey,
+				consumer_secret: consumerSecret
+			}
+
+		}).then((response) => {
+			let data = response.data;
+			return {
+				auth_url: `${apiAuth}/authorize?oauth_token=${data.oauth_token}`,
+				callback: createCallback(data.oauth_token, data.oauth_token_secret)
+			};
+
+		});
+
 	}
 
 	/**
