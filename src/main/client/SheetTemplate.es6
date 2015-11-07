@@ -3,10 +3,16 @@ import User from './User.es6';
 
 /**
  * @typedef {Object} GetSheetTemplateResponse~User
+ * @parameter {String} id
+ * @parameter {String} username
+ * @parameter {String} profile_url
+ * @parameter {String} avatar_image_url
  */
 
 /**
  * @typedef {Object} GetSheetTemplateResponse~GameSystem
+ * @parameter {String} id
+ * @parameter {String} name
  */
 
 /**
@@ -50,6 +56,118 @@ export default class SheetTemplate {
 	 */
 	constructor(data) {
 		this.$data = data;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.id}
+	 * @returns {String}
+	 */
+	public get id() {
+		return this.$data.id;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.slug}
+	 * @returns {String}
+	 */
+	public get slug() {
+		return this.$data.slug;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.name}
+	 * @returns {String}
+	 */
+	public get name() {
+		return this.$data.name;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.user}
+	 * @returns {GetSheetTemplateResponse~User}
+	 */
+	public get user() {
+		return this.$data.user;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.game_system}
+	 * @returns {GetSheetTemplateResponse~GameSystem}
+	 */
+	public get gameSystem() {
+		return this.$data.game_system;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.html_template}
+	 * @returns {String}
+	 */
+	public get htmlTemplate() {
+		return this.$data.html_template;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.css}
+	 * @returns {String}
+	 */
+	public get css() {
+		return this.$data.css;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.javascript}
+	 * @returns {String}
+	 */
+	public get javascript() {
+		return this.$data.javascript;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.state}
+	 * @returns {String}
+	 */
+	public get state() {
+		return this.$data.state;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.created_at}
+	 * @returns {Date}
+	 */
+	public get createdAt() {
+		return this.$data.created_at;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.updated_at}
+	 * @returns {Date}
+	 */
+	public get updatedAt() {
+		return this.$data.updated_at;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.html_template_submitted}
+	 * @returns {String}
+	 */
+	public get htmlTemplateSubmitted() {
+		return this.$data.html_template_submitted;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.css_submitted}
+	 * @returns {String}
+	 */
+	public get cssSubmitted() {
+		return this.$data.css_submitted;
+	}
+
+	/**
+	 * {@link GetSheetTemplateResponse.javascript_submitted}
+	 * @returns {String}
+	 */
+	public get javascriptSubmitted() {
+		return this.$data.javascript_submitted;
 	}
 
 }
