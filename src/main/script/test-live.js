@@ -1,11 +1,18 @@
-/* globals require, module */
+/* globals require, module, process */
+'use strict';
 
-require('lazy-modules')([
-	'../../../node_modules/gulp*'
-]);
+var gulp = require('gulp');
+var mocha = require('mocha');
 
 module.exports = function() {
-	return gulp.src('../../test/live')
-		.pipe(gulp_mocha());
-}
+	return gulp.src('../../test/live.js')
+
+		.pipe(mocha({
+		}))
+
+		.on('end', function() {
+			process.exit(0);
+		});
+
+};
 
