@@ -1,4 +1,6 @@
-/* globals Array, Promise, Map */
+/* globals Array, Map */
+
+import Campaign from './Campaign.es6';
 
 /**
  * @typedef  {Object}           GetUserResponse
@@ -32,11 +34,9 @@
 export default class User {
 
 	/**
-	 * @param {Portal}          portal The Obsidian Portal client. Needed for fetching Campaigns.
-	 * @param {GetUserResponse} data   The data payload received from the server.
+	 * @param {GetUserResponse} data The data payload received from the server.
 	 */
-	constructor(portal, data) {
-		this.$portal = portal;
+	constructor(data) {
 		this.$data = data;
 	}
 
@@ -74,12 +74,11 @@ export default class User {
 
 	/**
 	 * {@link GetUserResponse.campaigns}
-	 * @returns {Map<Promise<Campaign>,String>}
+	 * @returns {Map<Campaign,String>}
 	 */
 	public get campaigns() {
 		return Array.reduce(this.$data.campaigns, (map, campaign) => {
-			let promise = this.$portal.getCampaign(campaign.id);
-			map.set(promise, campaign.role);
+			map.set(new Campaign(campaign), campaign.role);
 			return map;
 
 		}, new Map());

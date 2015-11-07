@@ -1,8 +1,8 @@
 /* globals require, Promise */
 
-import User from './objects/User.es6';
-import MyUser from './objects/MyUser.es6';
-import Campaign from './objects/Campaign.es6';
+import User from './User.es6';
+import Campaign from './Campaign.es6';
+import Character from './Character.es6';
 
 let request = require('request-promise');
 
@@ -49,8 +49,8 @@ export default class Portal {
 				use_username: useUsername
 			}
 
-		}).then(function(response) {
-			return new User(this, response.data);
+		}).then((response) => {
+			return new User(response.data);
 		});
 	}
 
@@ -67,8 +67,93 @@ export default class Portal {
 				use_slug: useSlug
 			}
 
-		}).then(function(response) {
-			return new Campaign(this, response.data);
+		}).then((response) => {
+			return new Campaign(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The campaign identifier.
+	 * @returns {Promise<Array<Character>>} A promise resolving to a list of Characters.
+	 */
+	public function getCharacterList(campaignId) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/characters.json`,
+			method: 'GET'
+
+		}).then((response) => {
+			return Array.map(response.data, (character) => {
+				return new Character(character);
+			});
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to retrieve the character from.
+	 * @param {String} characterId The ID of the character to retrieve. You can also use the character slug
+	 * @param {Boolean} useSlug When set to 'true', or '1', the character will be looked up by slug instead of id.
+	 *                      Note: The campaign_id must be an identifier, not a slug.
+	 * @returns {Promise<Character>} A promise containing a single character for a campaign.
+	 */
+	public function getCharacter(campaignId, characterId, useSlug = false) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/characters/${characterId}.json`,
+			method: 'GET',
+			params: {
+				use_slug: useSlug
+			}
+
+		}).then((response) => {
+			return new Character(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to create a character in.
+	 * @param {Character} character The character to create for the campaign.
+	 * @returns {Promise<Character>} A promise that resolves to the newly created character.
+	 */
+	public function createCharacter(campaignId, character) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/characters.json`,
+			method: 'POST',
+			body: {
+				character: character
+			}
+
+		}).then((response) =>{
+			return new Character(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to retrieve a character from.
+	 * @param {Character} character The character to update for the campaign.
+	 * @param {String} character.id  The ID of the character to update.
+	 * @returns {Promise<Character>} A promise that resolves to the newly updated character.
+	 */
+	public function updateCharacter(campaignId, character) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/characters/${character.id}.json`,
+			method: 'PUT'
+
+		}).then((response) => {
+			return new Character(response.data);
+		});
+	}
+
+	/**
+	 * @param {String} campaignId The ID of the campaign to retrieve a character from.
+	 * @param {String} characterId The ID of the character to delete.
+	 * @returns {Promise} A promise that resolves to nothing in particular.
+	 */
+	public function deleteCharacter(campaignId, characterId) {
+		return request({
+			url: `${apiRoot}/campaigns/${campaignId}/characters/${characterId}.json`,
+			method: 'DELETE'
+
+		}).then((response) => {
+			return response.data;
 		});
 	}
 

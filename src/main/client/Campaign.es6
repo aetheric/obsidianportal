@@ -1,6 +1,6 @@
 /* globals Array, Promise */
 
-import Portal from './Portal.es6';
+import User from './User.es6';
 
 /**
  * @typedef  {Object}           GetCampaignResponse
@@ -45,11 +45,9 @@ import Portal from './Portal.es6';
 export default class Campaign {
 
 	/**
-	 * @param {Portal}              portal
-	 * @param {GetCampaignResponse} data    The data payload received from the server.
+	 * @param {GetCampaignResponse} data The data payload received from the server.
 	 */
-	constructor(portal, data) {
-		this.$portal = portal;
+	constructor(data) {
 		this.$data = data;
 	}
 
@@ -87,10 +85,10 @@ export default class Campaign {
 
 	/**
 	 * {@link GetCampaignResponse.game_master}
-	 * @returns {Promise<User>}
+	 * @returns {User}
 	 */
 	public get gameMaster() {
-		return this.$portal.getUser(this.$data.game_master.id);
+		return new User(this.$data.game_master);
 	}
 
 	/**
@@ -127,21 +125,21 @@ export default class Campaign {
 
 	/**
 	 * {@link GetCampaignResponse.players}
-	 * @returns {Array<Promise<User>>}
+	 * @returns {Array<User>}
 	 */
 	public get players() {
 		return Array.map(this.$data.players, (player) => {
-			return this.$portal.getUser(player.id);
+			return new User(player);
 		});
 	}
 
 	/**
 	 * {@link GetCampaignResponse.fans}
-	 * @returns {Array<Promise<User>>}
+	 * @returns {Array<User>}
 	 */
 	public get fans() {
 		return Array.map(this.$data.fans, (player) => {
-			return this.$portal.getUser(player.id);
+			return new User(player);
 		});
 	}
 
@@ -155,7 +153,7 @@ export default class Campaign {
 
 	/**
 	 * {@link GetCampaignResponse.location}
-	 * @returns {{lat: Number, lng: Number}}
+	 * @returns {{ lat: Number, lng: Number }}
 	 */
 	public get location() {
 		return this.$data.location;
