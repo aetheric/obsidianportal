@@ -1,10 +1,59 @@
-/* globals require */
+/* globals require, process */
+'use strict';
 
 var gulp = require('gulp');
+var mocha = require('mocha');
+var traceur = require('gulp-traceur');
+var istanbul = require('gulp-istanbul');
 
-gulp.task('build', require('./scripts/build.js'));
-gulp.task('test-unit', require('./scripts/test-unit.js'));
-gulp.task('test-live', require('./scripts/test-live.js'));
-gulp.task('test', [ 'test-unit', 'test-live' ]);
-gulp.task('default', [ 'build', 'test' ]);
+gulp.task('build', function() {
+	return gulp.src('client/**.js')
 
+		.pipe(traceur({
+		}))
+
+		.pipe(gulp.dest('dist'));
+
+});
+
+gulp.task('test-prep', function() {
+	return gulp.src('client/**.js')
+
+		.pipe(istanbul({
+		}));
+
+});
+
+gulp.task('test-unit', function() {
+	return gulp.src('test/unit.js')
+
+		.pipe(mocha({
+		}))
+
+		.on('end', function() {
+			process.exit(0);
+		});
+
+});
+
+gulp.task('test-live', function() {
+	return gulp.src('test/live.js')
+
+		.pipe(mocha({
+		}))
+
+		.on('end', function() {
+			process.exit(0);
+		});
+
+});
+
+gulp.task('test', [
+	'test-unit',
+	'test-live'
+]);
+
+gulp.task('default', [
+	'build',
+	'test'
+]);
