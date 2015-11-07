@@ -1,82 +1,136 @@
-/* globals Map, Array, appdir, request_promise */
+/* globals Array, Promise, Map */
 
-import Campaign from './Campaign.es6';
-import * as utils from './utils.es6';
+/**
+ * @typedef  {Object}           GetUserResponse
+ * @property {String}           id                          A unique identifier for the given user. This will never
+ *                                                              change.
+ * @property {String}           username                    The user's username. Note: The user can change this value.
+ * @property {String}           avatar_image_url            The URL of the user's avatar image.
+ * @property {String}           profile_url                 The URL of the user's profile on Obsidian Portal.
+ * @property {Array<Object>}    campaigns                   An array of the user's campaigns.
+ * @property {String}           campaigns[].id              {@link GetCampaignResponse.id}
+ * @property {String}           campaigns[].name            {@link GetCampaignResponse.name}
+ * @property {String}           campaigns[].campaign_url    {@link GetCampaignResponse.campaign_url}
+ * @property {String}           campaigns[].visibility      {@link GetCampaignResponse.visibility}
+ * @property {String}           campaigns[].role            What relation this user has to the campaign.
+ * @property {Boolean}          is_ascendant                Indicates if the user is an Ascendant member.
+ * @property {Date}             last_seen_at                The last time the user was active on the website. ISO-8601
+ *                                                              timestamp.
+ * @property {String}           utc_offset                  Formatted string representing the user's time zone. It is
+ *                                                              formatted as "+HH:MM" and represents the offset from
+ *                                                              UTC. Example: "-05:00" is Eastern US time.
+ * @property {String}           locale                      ISO 639-1 language code for the user's preferred
+ *                                                              language.
+ * @property {Date}             created_at                  Indicates when the user first created their account.
+ *                                                              ISO-8601 timestamp.
+ * @property {Date}             updated_at                  Indicates when the user first created their account.
+ *                                                              ISO-8601 timestamp.
+ */
 
-require('lazy-modules')([
-	appdir + '/node_modules/request-promise'
-]);
-
-let basicFields = [
-	'id',
-	'username',
-	'avatar_image_url',
-	'profile_url',
-	'created_at',
-	'is_ascendant',
-	'last_seen_at',
-	'utc_offset'
-];
-
-export default class User extends Map {
+/**
+ */
+export default class User {
 
 	/**
-	 *
-	 * @param {Portal} portal
-	 * @param {Object} data
-	 * @param {String} data.id
-	 * @param {String} data.username
-	 * @param {String} data.avatar_image_url
+	 * @param {Portal}          portal The Obsidian Portal client. Needed for fetching Campaigns.
+	 * @param {GetUserResponse} data   The data payload received from the server.
 	 */
 	constructor(portal, data) {
 		this.$portal = portal;
-		this.$active = [];
-
-		for (var field of basicFields) {
-			utils.copyField(field, data, this);
-		}
-
-		if (typeof(data.campaigns) !== 'undefined') {
-			this.$active.push('campaigns');
-			this._campaigns = Array.map(data.campaigns, function(campaign) {
-				return new Campaign(portal, campaign);
-			});
-		}
-
+		this.$data = data;
 	}
 
+	/**
+	 * {@link GetUserResponse.id}
+	 * @returns {String}
+	 */
 	public get id() {
-		return this._id;
+		return this.$data.id;
 	}
 
+	/**
+	 * {@link GetUserResponse.username}
+	 * @returns {String}
+	 */
 	public get username() {
-		return this._username;
+		return this.$data.username;
 	}
 
-	public get avatar_image_url() {
-		return this._avatar_image_url;
+	/**
+	 * {@link GetUserResponse.avatar_image_url}
+	 * @returns {String}
+	 */
+	public get avatarImageUrl() {
+		return this.$data.avatar_image_url;
 	}
 
-	public static function showMe(portal) {
-		return request_promise({
-			uri: `${portal.api_root}/users/me.json`,
-			method: 'GET'
-
-		}).then(function(response) {
-			return new User(portal, response.data);
-
-		});
+	/**
+	 * {@link GetUserResponse.profile_url}
+	 * @returns {String}
+	 */
+	public get profileUrl() {
+		return this.$data.profile_url;
 	}
 
-	public static function show(portal, userId) {
-		return request_promise({
-			uri: `${portal.api_root}/users/${userId}.json`,
-			method: 'GET'
+	/**
+	 * {@link GetUserResponse.campaigns}
+	 * @returns {Map<Promise<Campaign>,String>}
+	 */
+	public get campaigns() {
+		return Array.reduce(this.$data.campaigns, (map, campaign) => {
+			let promise = this.$portal.getCampaign(campaign.id);
+			map.set(promise, campaign.role);
+			return map;
 
-		}).then(function(response) {
-			return new User(portal, response.data);
+		}, new Map());
+	}
 
-		});
+	/**
+	 * {@link GetUserResponse.is_ascendant}
+	 * @returns {Boolean}
+	 */
+	public get isAscendant() {
+		return this.$data.is_ascendant;
+	}
+
+	/**
+	 * {@link GetUserResponse.last_seen_at}
+	 * @returns {Date}
+	 */
+	public get lastSeenAt() {
+		return this.$data.last_seen_at;
+	}
+
+	/**
+	 * {@link GetUserResponse.utc_offset}
+	 * @returns {String}
+	 */
+	public get utcOffset() {
+		return this.$data.utc_offset;
+	}
+
+	/**
+	 * {@link GetUserResponse.locale}
+	 * @returns {String}
+	 */
+	public get locale() {
+		return this.$data.locale;
+	}
+
+	/**
+	 * {@link GetUserResponse.created_at}
+	 * @returns {Date}
+	 */
+	public get createdAt() {
+		return this.$data.created_at;
+	}
+
+	/**
+	 * {@link GetUserResponse.updated_at}
+	 * @returns {Date}
+	 */
+	public get updatedAt() {
+		return this.$data.updated_at;
 	}
 
 }

@@ -1,125 +1,164 @@
-/* globals Array, Map, request_promise, appdir */
+/* globals Array, Promise */
 
 import Portal from './Portal.es6';
-import User from './User.es6';
-import * as utils from './utils.es6';
 
-require('lazy-modules')([
-	appdir + '/node_modules/request-promise'
-]);
+/**
+ * @typedef  {Object}           GetCampaignResponse
+ * @property {String}           id                              An identifier for the campaign. This will never
+ *                                                                  change.
+ * @property {String}           slug                            A URL-friendly slug for the campaign. The user can
+ *                                                                  change this.
+ * @property {String}           campaign_url                    The URL to the campaign homepage.
+ * @property {String}           visibility                      The visibility of the campaign. Can be 'public',
+ *                                                                  'friends', or 'private'
+ * @property {Object}           game_master                     The game master of the campaign.
+ * @property {String}           game_master.id                  {@link GetUserResponse.id}
+ * @property {String}           game_master.username            {@link GetUserResponse.username}
+ * @property {String}           game_master.profile_url         {@link GetUserResponse.profile_url}
+ * @property {String}           game_master.avatar_image_url    {@link GetUserResponse.avatar_image_url}
+ * @property {Date}             created_at                      Indicates when the campaign was first created.
+ *                                                                  ISO-8601 timestamp
+ * @property {Date}             updated_at                      Indicates when the campaign was last updated. ISO-8601
+ *                                                                  timestamp
+ * @property {String}           banner_image_url                The URL to the campaign banner.
+ * @property {String}           play_status                     The current play status of the campaign
+ * @property {Array<Object>}    players                         An array of user mini-objects for the campaign's
+ *                                                                  players
+ * @property {String}           players[].id                    {@link GetUserResponse.id}
+ * @property {String}           players[].username              {@link GetUserResponse.username}
+ * @property {String}           players[].profile_url           {@link GetUserResponse.profile_url}
+ * @property {Array<Object>}    fans                            An array of user mini-objects for the campaign's fans.
+ * @property {String}           fans[].id                       {@link GetUserResponse.id}
+ * @property {String}           fans[].username                 {@link GetUserResponse.username}
+ * @property {String}           fans[].profile_url              {@link GetUserResponse.profile_url}
+ * @property {Boolean}          looking_for_players             A flag to indicate if the campaign is looking for
+ *                                                                  players
+ * @property {Object}           location                        A JSON object containing: { lat and lng }
+ *                                                                  representing the campaign's "Where We Game"
+ *                                                                  location
+ * @property {Number}           location.lat
+ * @property {Number}           location.lng
+ */
 
-let basicFields = [
-	'id',
-	'role',
-	'slug',
-	'visibility',
-	'campaign_url',
-	'name',
-	'play_status',
-	'looking_for_players',
-	'created_at',
-	'updated_at'
-];
-
-export default class Campaign extends Map {
+/**
+ */
+export default class Campaign {
 
 	/**
-	 *
-	 * @param {Portal} portal
-	 * @param {Object} data
-	 * @parma {String} data.id
-	 * @param {String} data.slug
-	 * @param {String} data.name
-	 * @param {Object} data.game_master
-	 * @param {String} data.game_master.id
-	 * @param {String} data.game_master.username
-	 * @param {String} data.game_master.profile_url
-	 * @param {String} data.game_master.avatar_image_url
-	 * @param {String} data.play_status
-	 * @param {Object[]} data.players
-	 * @param {String} data.players[].id
-	 * @param {String} data.players[].username
-	 * @param {String} data.players[].profile_url
-	 * @param {Object[]} data.fans
-	 * @param {String} data.fans[].id
-	 * @param {String} data.fans[].username
-	 * @param {String} data.fans[].profile_url
-	 * @param {Boolean} data.looking_for_players
-	 * @param {Date} data.created_at
-	 * @param {Date} data.updated_at
-	 * @param {Object} data.location
-	 * @param {Number} data.location.lat
-	 * @param {Number} data.location.lng
+	 * @param {Portal}              portal
+	 * @param {GetCampaignResponse} data    The data payload received from the server.
 	 */
 	constructor(portal, data) {
 		this.$portal = portal;
-		this.$active = [];
-
-		for (var field of basicFields) {
-			utils.copyField(field, data, this);
-		}
-
-		if (typeof(data.game_master) !== 'undefined') {
-			this.$active.push('game_master');
-			this._game_master = new User(portal, data.game_master);
-		}
-
-		if (typeof(data.players) !== 'undefined') {
-			this.$active.push('players');
-			this._players = Array.map(data.players, function(player) {
-				return new User(portal, player);
-			});
-		}
-
-		if (typeof(data.fans) !== 'undefined') {
-			this.$active.push('fans');
-			this._fans = Array.map(data.fans, function(fan) {
-				return new User(portal, fan);
-			});
-		}
-
-	}
-
-	public get id() {
-		return this._id;
-	}
-
-	public get name() {
-		return this._name;
-	}
-
-	public get campaign_url() {
-		return this._campaign_url;
-	}
-
-	public get visibility() {
-		return this._visibility;
-	}
-
-	public get role() {
-		return this._role;
-	}
-
-	public function refresh() {
-		return show(this.$portal, id);
+		this.$data = data;
 	}
 
 	/**
-	 *
-	 * @param {String} campaignId
-	 * @param {Boolean} [useSlug]
-	 * @returns {Promise}
+	 * {@link GetCampaignResponse.id}
+	 * @returns {String}
 	 */
-	public static function show(portal, campaignId, useSlug = false) {
-		let parsedUseSlug = useSlug ? 'true' : 'false';
-		return request_promise({
-			uri: `${portal.api_root}/campaigns/${campaignId}.json?use_slug=${parsedUseSlug}`,
-			method: 'GET'
+	public get id() {
+		return this.$data.id;
+	}
 
-		}).then(function(response) {
-			return new Campaign(portal, response.data);
+	/**
+	 * {@link GetCampaignResponse.slug}
+	 * @returns {String}
+	 */
+	public get slug() {
+		return this.$data.slug;
+	}
 
+	/**
+	 * {@link GetCampaignResponse.campaign_url}
+	 * @returns {String}
+	 */
+	public get campaignUrl() {
+		return this.$data.campaign_url;
+	}
+
+	/**
+	 * {@link GetCampaignResponse.visibility}
+	 * @returns {String}
+	 */
+	public get visibility() {
+		return this.$data.visibility;
+	}
+
+	/**
+	 * {@link GetCampaignResponse.game_master}
+	 * @returns {Promise<User>}
+	 */
+	public get gameMaster() {
+		return this.$portal.getUser(this.$data.game_master.id);
+	}
+
+	/**
+	 * {@link GetCampaignResponse.created_at}
+	 * @returns {Date}
+	 */
+	public get createdAt() {
+		return this.$data.created_at;
+	}
+
+	/**
+	 * {@link GetCampaignResponse.updated_at}
+	 * @returns {Date}
+	 */
+	public get updatedAt() {
+		return this.$data.updated_at;
+	}
+
+	/**
+	 * {@link GetCampaignResponse.banner_image_url}
+	 * @returns {String}
+	 */
+	public get bannerImageUrl() {
+		return this.$data.banner_image_url;
+	}
+
+	/**
+	 * {@link GetCampaignResponse.play_status}
+	 * @returns {String}
+	 */
+	public get playStatus() {
+		return this.$data.play_status;
+	}
+
+	/**
+	 * {@link GetCampaignResponse.players}
+	 * @returns {Array<Promise<User>>}
+	 */
+	public get players() {
+		return Array.map(this.$data.players, (player) => {
+			return this.$portal.getUser(player.id);
 		});
+	}
+
+	/**
+	 * {@link GetCampaignResponse.fans}
+	 * @returns {Array<Promise<User>>}
+	 */
+	public get fans() {
+		return Array.map(this.$data.fans, (player) => {
+			return this.$portal.getUser(player.id);
+		});
+	}
+
+	/**
+	 * {@link GetCampaignResponse.looking_for_players}
+	 * @returns {Boolean}
+	 */
+	public get lookingForPlayers() {
+		return this.$data.looking_for_players;
+	}
+
+	/**
+	 * {@link GetCampaignResponse.location}
+	 * @returns {{lat: Number, lng: Number}}
+	 */
+	public get location() {
+		return this.$data.location;
 	}
 
 }
