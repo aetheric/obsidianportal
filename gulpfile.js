@@ -2,30 +2,34 @@
 'use strict';
 
 var gulp = require('gulp');
-var mocha = require('gulp-mocha');
-var traceur = require('gulp-traceur');
-var istanbul = require('gulp-istanbul');
-var sourcemaps = require('gulp-sourcemaps');
-var concat = require('gulp-concat');
-var uglify = require('gulp-uglify');
+var gulpMocha = require('gulp-mocha');
+var gulpTraceur = require('gulp-traceur');
+var gulpIstanbul = require('gulp-istanbul');
+var gulpSourcemaps = require('gulp-sourcemaps');
+var gulpConcat = require('gulp-concat');
+var gulpUglify = require('gulp-uglify');
+
+var istanbul = require('gulp-istanbul/node_modules/istanbul');
+var istanbulTraceur = require('istanbul-traceur');
+istanbul.Instrumenter = istanbulTraceur.Instrumenter;
 
 gulp.task('build', function() {
 	return gulp.src('client/**.js')
 
-		.pipe(sourcemaps.init({
+		.pipe(gulpSourcemaps.init({
 			loadMaps: true
 		}))
 
-		.pipe(traceur({
+		.pipe(gulpTraceur({
 		}))
 
-		.pipe(concat('client.js'))
+		.pipe(gulpConcat('client.js'))
 
-		.pipe(uglify({
+		.pipe(gulpUglify({
 			mangle: true
 		}))
 
-		.pipe(sourcemaps.write('.'))
+		.pipe(gulpSourcemaps.write('.'))
 
 		.pipe(gulp.dest('dist'));
 
@@ -34,66 +38,45 @@ gulp.task('build', function() {
 gulp.task('test-prep', function() {
 	return gulp.src('client/**/*.js')
 
-		.pipe(istanbul({
+		.pipe(gulpIstanbul({
 		}))
 
-		.pipe(istanbul.hookRequire());
+		.pipe(gulpIstanbul.hookRequire());
 
 });
 
-gulp.task('test-unit', [ 'test-prep' ], function() {
-	return gulp.src('test/unit.js')
+function mochaTest(file) {
+	return function() {
+		return gulp.src(file)
 
-		.pipe(mocha({
-			ui: 'bdd',
-			reporter: 'spec',
-			bail: false,
-			compilers: {
-				es6: 'mocha-traceur'
-			}
-		}))
+			.pipe(gulpMocha({
+				ui: 'bdd',
+				reporter: 'spec',
+				bail: false,
+				compilers: {
+					es6: 'mocha-traceur'
+				}
+			}))
 
-		.pipe(istanbul.writeReports({
-		}))
+			.pipe(gulpIstanbul.writeReports({
+			}))
 
-		.pipe(istanbul.enforceThresholds({
-			thresholds: {
-				global: 1
-			}
-		}))
+			.pipe(gulpIstanbul.enforceThresholds({
+				thresholds: {
+					global: 1
+				}
+			}))
 
-		.on('close', function() {
-			process.exit(0);
-		});
+			.on('close', function() {
+				process.exit(0);
+			});
 
-});
+	}
+}
 
-gulp.task('test-live', [ 'test-prep' ], function() {
-	return gulp.src('test/live.js')
+gulp.task('test-unit', [ 'test-prep' ], mochaTest('test/unit.js'));
 
-		.pipe(mocha({
-			ui: 'bdd',
-			reporter: 'spec',
-			bail: false,
-			compilers: {
-				es6: 'mocha-traceur'
-			}
-		}))
-
-		.pipe(istanbul.writeReports({
-		}))
-
-		.pipe(istanbul.enforceThresholds({
-			thresholds: {
-				global: 1
-			}
-		}))
-
-		.on('close', function() {
-			process.exit(0);
-		});
-
-});
+gulp.task('test-live', [ 'test-prep' ], mochaTest('test/live.js'));
 
 gulp.task('test', [
 	'test-unit',
