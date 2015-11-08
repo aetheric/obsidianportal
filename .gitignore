@@ -8,3 +8,5 @@ dist/
 workspace.xml
 .classpath
 atlassian-ide-plugin.xml
+
+*.log

@@ -1,5 +1,5 @@
 
-import User from './User.es6';
+import User from './user.js';
 
 /**
  * @typedef {Object} GetWikiPageResponse

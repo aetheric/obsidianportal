@@ -1,7 +1,7 @@
 /* globals */
 'use strict';
 
-import ErrorMessage from './error-message.es6';
+import ErrorMessage from './error-message.js';
 
 export default class Error {
 

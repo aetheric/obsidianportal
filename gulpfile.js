@@ -5,12 +5,27 @@ var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 var traceur = require('gulp-traceur');
 var istanbul = require('gulp-istanbul');
+var sourcemaps = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
 
 gulp.task('build', function() {
 	return gulp.src('client/**.js')
 
+		.pipe(sourcemaps.init({
+			loadMaps: true
+		}))
+
 		.pipe(traceur({
 		}))
+
+		.pipe(concat('client.js'))
+
+		.pipe(uglify({
+			mangle: true
+		}))
+
+		.pipe(sourcemaps.write('.'))
 
 		.pipe(gulp.dest('dist'));
 

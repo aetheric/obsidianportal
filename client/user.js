@@ -1,6 +1,6 @@
 /* globals Array, Map */
 
-import Campaign from './Campaign.es6';
+import Campaign from './campaign.js';
 
 /**
  * @typedef  {Object}           GetUserResponse

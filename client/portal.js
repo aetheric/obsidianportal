@@ -1,10 +1,10 @@
 /* globals require, Promise */
 
-import User from './User.es6';
-import Campaign from './Campaign.es6';
-import Character from './Character.es6';
-import WikiPage from './WikiPage.es6';
-import SheetTemplate from './SheetTemplate.es6';
+import User from './user.js';
+import Campaign from './campaign.js';
+import Character from './character.js';
+import WikiPage from './wiki-page.js';
+import SheetTemplate from './sheet-template.js';
 
 let request = require('request-promise');
 
